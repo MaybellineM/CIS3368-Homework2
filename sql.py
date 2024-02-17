@@ -17,16 +17,22 @@ def Create_connection(host_name,user_name,user_pw, db_name):
     return connection
 
 
-def execute_query(connection,query):
+def execute_query(connection, query, values=None):
     cursor = connection.cursor()
     try:
-        cursor.execute(query)
+        if values:
+            cursor.execute(query, values)
+        else:
+            cursor.execute(query)
         connection.commit()
-        print("Query executed succesfully")
+        print("Query executed successfully.")
     except Error as e:
-        print(f"The error '{e} has occured'")
+        print(f"Error: {e}")
+    finally:
+        cursor.close()
 
 
+        
 def execute_read_query(connection, query):
     cursor = connection.cursor(dictionary=True)
     result = None
