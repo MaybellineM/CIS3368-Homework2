@@ -111,11 +111,29 @@ def update_onhand():
 
 
 #DELETE: This API should allow to delete a tire, provided a given id
+@app.route('/api/deltire', methods = ["DELETE"])
+def delete_tire():
+    #Establish connection
+    myCreds = creds.Creds()
+    conn = Create_connection (myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbname)
 
 
 
+    # Extract values
+    del_tire = request.get_json() 
+    id = int(del_tire['id'])
+
+    del_query = "DELETE from Inventory where id= %s"
+    del_val = (id,) #Has to be passed as a tuple in order for it to work
 
 
+    try:
+        del_tire = execute_query(conn, del_query, del_val)
+    except Exception as e:
+        print("Error executing query:", e)
+
+    conn.close()
+    return jsonify(del_tire)
 
 
 
