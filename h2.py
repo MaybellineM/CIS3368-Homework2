@@ -27,7 +27,7 @@ query = "INSERT INTO Inventory(brand, model, loadrating, speedrating, tiretype, 
 values = (tire_brand, tire_model, tire_loadrating, tire_speedrating, tire_type, tire_stock)
 
 # Execute the query
-execute_query(conn, query, values)#Commented out because I already ran the query
+#execute_query(conn, query, values)Commented out because I already ran the query
 
 
 
@@ -79,14 +79,33 @@ def addnew_tire():
 
 
 
-
-
-
 #PUT: This API should allow to update the stock column of a tire, provided a given id
 
+@app.route('/api/updatestock', methods = ["PUT"])
+def update_onhand():
+    #Establish connection
+    myCreds = creds.Creds()
+    conn = Create_connection (myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbname)
 
 
 
+    # Extract values
+    update_stocks = request.get_json() 
+    id = int(update_stocks['id'])
+    stock = int(update_stocks['stock'])
+
+    #QUERY for mysql
+    stock_query = "UPDATE Inventory SET stock = %s WHERE id = %s"
+    stock_values = (stock, id)
+
+
+    try:
+        update_stocks = execute_query(conn, stock_query, stock_values)
+    except Exception as e:
+        print("Error executing query:", e)
+
+    conn.close()
+    return jsonify(update_stocks)
 
 
 
@@ -105,6 +124,7 @@ app.run()
 '''
 
  C I T A T I O N S 
- https://www.discounttire.com
-
+https://www.discounttire.com
+https://www.geeksforgeeks.org/put-method-python-requests/?ref=header_search
+https://realpython.com/api-integration-in-python/#put
 '''
